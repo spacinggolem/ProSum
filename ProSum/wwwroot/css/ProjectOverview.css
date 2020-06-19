@@ -1,0 +1,123 @@
+﻿/* Overview page */
+table.project-table {
+    margin-top: 1%;
+    border-collapse: separate;
+    border: solid black 1px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 5px 5px rgba(0, 0, 0, .2);
+    font-size: 1.2rem;
+}
+
+    table.project-table thead tr {
+        border-radius: 10px;
+    }
+
+        table.project-table thead tr th {
+            background-color: #0F4C72;
+            color: white;
+            padding: 1%;
+            font-size: large;
+            text-align: center;
+        }
+
+    table.project-table tbody tr td,
+    table.project-table tbody tr th {
+        text-align: center;
+        height: 50px;
+    }
+
+    table.project-table tbody tr td,
+    table.project-table tbody tr th {
+        background-color: white;
+        border-bottom: 1px solid grey;
+    }
+
+    table.project-table tbody tr:hover {
+        cursor: pointer;
+    }
+
+.progress {
+    display: flex;
+    width: 100%;
+    background: #ddd;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 4px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 30px;
+}
+
+    .progress .step .details {
+        visibility: hidden;
+        background-color: white;
+        border: 2px solid black;
+        padding: 5px 0;
+        border-radius: 6px;
+        position: absolute;
+        z-index: 1;
+    }
+
+    .progress > div.step {
+        flex-grow: 1;
+        min-height: 120px;
+        height: auto;
+    }
+
+    .progress .step:not(:last-child) {
+        border-right: 1px solid rgba(0, 0, 0, 0.8);
+    }
+
+    .progress .step.confirmed {
+        background: rgb(61, 153, 112);
+    }
+
+    .progress .step.not_started {
+        background: rgb(195, 37, 37);
+    }
+
+    .progress .step.confirmation {
+        background: rgb(35, 74, 184);
+    }
+
+    .progress .step.started {
+        background: rgb(230, 178, 36);
+    }
+
+    .progress .step {
+        display: flex;
+        align-content: center;
+        min-width: 5px;
+    }
+
+        .progress .step .details {
+            padding-right: 5px;
+            align-self: center;
+            margin: 0 auto;
+            margin-top: 25px;
+        }
+
+            .progress .step .details:before {
+                padding: 5px;
+                content: '';
+                position: relative;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                z-index: -1;
+            }
+
+        .progress .step:hover .details {
+            visibility: visible;
+        }
+
+td.progressBar {
+    padding: 0;
+}
+
+/* End Overview page */

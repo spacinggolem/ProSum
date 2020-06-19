@@ -1,0 +1,81 @@
+﻿@using ProSum.Models.ViewModels
+@model AnnouncementViewModel
+@{
+    ViewData["Title"] = "Announcements";
+}
+
+
+@section Styles { <link rel="stylesheet" href="~/css/ProjectDetailPage.css" /> }
+
+<div class="body-content">
+    <h1>Project</h1>
+    <header>
+        <nav class="navbar">
+            <a class="navbar-text" asp-action="Details" asp-controller="Project" asp-route-projectId="@Model.ProjectId">Details</a>
+            <a class="navbar-text" style="color:gray; text-decoration:underline;" href="#">Announcements (@Model.Announcements.Count)</a>
+        </nav>
+    </header>
+
+    <div class="project-wrapper">
+        <div class="project-column-wrapper">
+            <div class="container">
+                <h2>Files</h2>
+                <table class="table-responsive table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Title:</th>
+                            <th>Location:</th>
+                            <th>Department:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ProjectFiles != null && Model.ProjectFiles.Count > 0)
+                        {
+                            @foreach (ProjectFile file in Model.ProjectFiles)
+                            {
+                                <tr>
+                                    <td><a href=@file.Link target="_blank">@file.Link</a></td>
+                                    <td>@file.Title</td>
+                                    <td>@file.Department</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div style="margin-top:10px;">
+                    <form asp-controller="Project" asp-action="AddProjectFile" method="get" style="margin-right: 20px;">
+                        <input type="hidden" name="projectId" value="@Model.ProjectId" />
+                        <button class="btn btn-primary">Nieuw Bestand Toevoegen</button>
+                    </form>
+                </div>
+                <br />
+                <hr />
+                <h2>Announcements</h2>
+                @if (Model.Announcements != null && Model.Announcements.Count > 0)
+                {
+                    @foreach (Announcement announcement in Model.Announcements.OrderByDescending(a => a.Timestamp))
+                    {
+                        <div class="row" style="margin-top: 10px; background-color: white; border: 1px solid lightgray; border-radius: 15px;">
+                            <div class="col-sm-8">
+                                <div style="font-size:25px; font-weight:bold; color: black">@announcement.Title</div>
+                                <div style="font-size:18px;">@announcement.Message</div>
+                                <div style="font-size:12px;"> By @announcement.Author.Name</div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div style="color:black; margin-top: 10px;">Posted on:</div>
+                                <div>@announcement.Timestamp.ToString("dd MMMM yyyy HH:mm")</div>
+                            </div>
+                        </div>
+                    }
+                }
+                <div style="margin-top:10px;">
+                    <form asp-controller="Project" asp-action="AddAnnouncement" method="get" style="margin-right: 20px;">
+                        <input type="hidden" name="projectId" value="@Model.ProjectId" />
+                        <button class="btn btn-primary">Nieuwe Announcement</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

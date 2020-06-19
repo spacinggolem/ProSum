@@ -1,0 +1,67 @@
+﻿@using ProSum.Models.ViewModels
+@model List<ProjectViewModel>
+
+@{
+    ViewData["Title"] = "Project";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/ProjectOverview.css" />
+}
+
+<div class="body-content">
+    <h1>Projecten:</h1>
+    <table class="project-table table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Project</th>
+                <th scope="col">Klant</th>
+                <th scope="col">Status</th>
+                <th scope="col">Projectleider</th>
+                <th scope="col">Deadline</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int counter = 1; }
+            @foreach (ProjectViewModel project in Model)
+            {
+                <tr onclick="window.location.href='@Url.Action("Details", "Project", new { projectId = project.Id})'">
+                    <td scope="row">@project.Title</td>
+                    <td>@project.Client?.Company</td>
+
+                    <td class="progressBar">
+                        <div class="progress">
+                            @foreach (ProjectStep step in project.Steps)
+                            {
+                                string className = "not_started";
+
+                                switch (step.Status)
+                                {
+                                    case Step.Status.in_progress:
+                                        className = "started";
+                                        break;
+
+                                    case Step.Status.confirmed:
+                                        className = "confirmed";
+                                        break;
+
+                                    case Step.Status.awaiting_confirmation:
+                                        className = "confirmation";
+                                        break;
+
+                                }
+                                <div class="step @(className)">
+                                    <span class="details">@step.Step.Name || @step.Status.ToString()</span>
+                                </div>
+
+                            }
+                        </div>
+                    </td>
+                    <td>@project.ProjectManagers.FirstOrDefault()?.Name</td>
+                    <td>@project.DeadLine.ToString("dd MMMM yyyy")</td>
+                </tr>
+                counter++;
+            }
+        </tbody>
+    </table>
+    <a role="button" class="btn btn-primary" style="color: white;" asp-controller="Project" asp-action="Create">Voeg project toe</a>
+</div>

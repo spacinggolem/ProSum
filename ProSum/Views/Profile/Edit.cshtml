@@ -1,0 +1,36 @@
+﻿@using ProSum.Models.ViewModels;
+@model EditProfileViewModel;
+
+@{ 
+    ViewData["Title"] = "Edit profile";
+}
+    <div class="body-content">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="@Model.Id" />
+            <div class="form-group">
+                <span asp-validation-for="@Model.Firstname" class="text-danger"></span> <br />
+                <label asp-for="@Model.Firstname" class="control-label">Voornaam</label>
+                <input type="text" asp-for="@Model.Firstname" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <span asp-validation-for="@Model.Lastname" class="text-danger"></span> <br />
+                <label asp-for="@Model.Lastname" class="control-label">Achternaam</label>
+                <input type="text" asp-for="@Model.Lastname" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <span asp-validation-for="@Model.Email" class="text-danger"></span> <br />
+                <label asp-for="@Model.Email" class="control-label">Email</label>
+                <input type="text" asp-for="@Model.Email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <span asp-validation-for="@Model.Phonenumber" class="text-danger"></span> <br />
+                <label asp-for="@Model.Phonenumber" class="control-label">Email</label>
+                <input type="number" asp-for="@Model.Phonenumber" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Bewerk" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>

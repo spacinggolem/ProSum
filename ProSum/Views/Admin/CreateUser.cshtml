@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "CreateUser";
+}
+
+
+@using ProSum.Models.ViewModels
+@using ProSum.Models
+@model CreateUserViewModel
+<div class="body-content">
+
+    <form asp-action="CreateUser">
+        <div class="form-group">
+            <span asp-validation-for="@Model.Username" class="text-danger"></span> <br />
+            <label asp-for="@Model.Username" class="control-label">Gebruikersnaam: </label>
+            <input type="text" asp-for="@Model.Username" class="form-control" />
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.Firstname" class="text-danger"></span><br />
+            <label asp-for="@Model.Firstname" class="control-label">Voornaam: </label>
+            <input type="text" asp-for="@Model.Firstname" class="form-control" />
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.Lastname" class="text-danger"></span><br /> 
+            <label asp-for="@Model.Lastname" class="control-label">Achternaam: </label>
+            <input type="text" asp-for="@Model.Lastname" class="form-control" />
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.Password" class="text-danger"></span> <br />
+            <label asp-for="@Model.Password" class="control-label">Wachtwoord: </label>
+            <input type="password" asp-for="@Model.Password" class="form-control" />
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.Email" class="text-danger"></span> <br />
+            <label asp-for="@Model.Email" class="control-label">Email: </label>
+            <input type="email" asp-for="@Model.Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span> <br />
+            <label asp-for="@Model.PhoneNumber" class="control-label">Telefoonnummer (bv. 31612345678): </label>
+            <input type="text" asp-for="@Model.PhoneNumber" class="form-control" />
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.Role" class="text-danger"></span> <br />
+
+            <label asp-for="@Model.Role" class="control-label">Functie </label>
+            <select class="form-control" asp-for="@Model.Role" asp-items="@Html.GetEnumSelectList(typeof(RolesEnum))"></select>
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.Department" class="text-danger"></span> <br />
+
+            <label asp-for="@Model.Department" class="control-label">Afdeling </label>
+            <select class="form-control" id="departmentSelector" asp-for="@Model.Department" asp-items="@Html.GetEnumSelectList(typeof(DepartmentEnum))"></select>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script type="text/javascript">
+    $("#departmentSelector").children("option:contains('None')").remove();
+    $("#departmentSelector").val(1);
+</script>
+}

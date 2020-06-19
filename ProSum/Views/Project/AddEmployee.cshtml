@@ -1,0 +1,80 @@
+﻿@using ProSum.Models.ViewModels
+@model ProjectAddEmployee
+@{
+    ViewData["Title"] = "AddEmployees";
+}
+
+<h1>Medewerker toevoegen</h1>
+<div class="body-content">
+    <form asp-action="AddEmployee" asp-controller="Project" asp-route-projectId="@Model.ProjectId">
+        <div class="form-group">
+            <span asp-validation-for="@Model.NewEmployeeId" class="text-danger"></span> <br />
+
+            <label for="employee">Nieuwe medewerker</label>
+            <select class="form-control" asp-for="@Model.NewEmployeeId">
+                @foreach (User employee in Model.Employees)
+                {
+                    <option value="@employee.Id">@employee.Name</option>
+                }
+            </select>
+        </div>
+        <input type="submit" value="Toevoegen" class="ml-0 btn btn-success" />
+    </form>
+
+    
+
+
+    <h2>Project Medewerkers:</h2>
+    <table class="table table-responsive">
+        <tr>
+            <th>
+                Naam:
+            </th>
+            <th>
+                Email:
+            </th>
+            <th>
+                Telefoonnummer:
+            </th>
+            <th>
+                Edit
+            </th>
+        </tr>
+        @foreach (User projectEmployee in Model.ProjectEmployees)
+        {
+            <tr>
+                <td>
+                    @projectEmployee.Name
+                </td>
+                <td>
+                    @projectEmployee.Email
+                </td>
+                <td>
+                    @projectEmployee.PhoneNumber
+                </td>
+                <td>
+                    <form asp-controller="Project" asp-action="EditEmployeePermission" method="get">
+                        <input type="hidden" value="@projectEmployee.Id" name="userId" />
+                        <input type="hidden" value="@Model.ProjectId" name="projectId" />
+                        <button type="submit" class="btn btn-success">Edit</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $("#inputUserName").on("change keydown input paste", function () {
+            var selectedOption = $("#employees option[value='" + $(this).val() + "']");
+            var selectedUser = selectedOption.attr('data-userId');
+
+            if (selectedUser) {
+                $('#UserId').val(selectedUser);
+            } else {
+                console.log("No value");
+                $('#UserId').val('');
+            }
+        })
+    </script>}

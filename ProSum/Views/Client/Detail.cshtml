@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewData["Title"] = "Client details";
+}
+@using ProSum.Models.ViewModels
+@using ProSum.Models;
+@model Client
+
+
+<div class="body-content">
+    <h1>Client details:</h1>
+    <div class="title">
+        <h3>Client details:</h3>
+    </div>
+    <div class="content">
+        <table class="table table-responsive">
+            
+            <tr>
+                <th scope="row">
+                    Name:
+                </th>
+                <td>
+                    @Model.Name
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    Email:
+                </th>
+                <td>
+                    @Model.Email
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    Bedrijfsnaam:
+                </th>
+                <td>
+                    @Model.Company
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    Telefoonnummer:
+                </th>
+                <td>
+                    @Model.PhoneNumber
+                </td>
+            </tr>
+        </table>
+        <form method="get" asp-controller="client" asp-action="edit">
+            <input type="hidden" value="@Model.Id" name="clientid"/>
+            <button type="submit" class="btn btn-primary">Bewerken</button>
+        </form>
+    </div>
+</div>

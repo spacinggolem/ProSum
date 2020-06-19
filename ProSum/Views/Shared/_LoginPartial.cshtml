@@ -1,0 +1,23 @@
+﻿@using ProSum.Containers.Interfaces;
+@inject ISessionContainer  _SessionContainer;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+    <ul class="nav navbar-nav navbar-right">
+        @if (_SessionContainer.GetSession(HttpContextAccessor) != null)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-action="Index" asp-controller="Profile" asp-route-userId="@_SessionContainer.GetSession(HttpContextAccessor).User.Id" title="Manage">
+                    Hallo @_SessionContainer.GetSession(HttpContextAccessor).User.Name!
+                </a>
+            </li>
+            <li class="nav-item">
+                <form class="form-inline" asp-controller="User" asp-action="LogOut" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                    <button type="submit" class="nav-link btn btn-link text-dark">Afmelden</button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li><a asp-controller="User" asp-action="Login">Inloggen</a></li>
+        }
+    </ul>

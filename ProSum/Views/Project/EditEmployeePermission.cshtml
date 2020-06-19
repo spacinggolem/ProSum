@@ -1,0 +1,88 @@
+﻿@using ProSum.Models;
+@model ProSum.Models.ViewModels.PermissionViewModel;
+@{
+    ViewData["Title"] = "EditPermission";
+}
+
+<div class="container">
+<h1>Rechten aanpassen</h1>
+
+    <h3>
+        De lees rechten zijn voor het zien van de bijbehorende bestanden. <br />
+        De schrijf rechten zijn voor het aanpassen van de status van de stap.
+    </h3>
+<form asp-action="EditEmployeePermission" asp-controller="Project">
+    <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+    <input type="hidden" asp-for="ProjectId" value="@Model.ProjectId" />
+    <table class="permission-table">
+        <thead>
+            <tr>
+                <td>Stap</td>
+                <td>Rechten</td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Permissions.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" asp-for="@Model.Permissions[i].Step.Name" value="@Model.Permissions[i].Step.Name" />
+                        @Model.Permissions[i].Step.Name
+                    </td>
+                    <td>
+                        <div class="radio-group">
+
+                            <input asp-for="@Model.Permissions[i].Permission" type="radio" value="@StepPermission.PermissionEnum.None" id="option-one-@(i)">
+                            <label class="permission-label" for="option-one-@(i)">Geen</label>
+
+                            @if (Model.CurrentPermissions != null && Model.CurrentPermissions.HasPermission("Read" + Model.Permissions[i].Step.Name))
+                            {
+                                <input asp-for="@Model.Permissions[i].Permission" type="radio" value="@StepPermission.PermissionEnum.Read" id="option-two-@(i)" checked />
+                            }
+                            else
+                            {
+                                <input asp-for="@Model.Permissions[i].Permission" type="radio" value="@StepPermission.PermissionEnum.Read" id="option-two-@(i)" />
+                            }
+                            <label class="permission-label" for="option-two-@(i)">Lezen</label>
+
+
+                            @if (Model.CurrentPermissions != null && Model.CurrentPermissions.HasPermission("Write" + Model.Permissions[i].Step.Name))
+                            {
+                                <input asp-for="@Model.Permissions[i].Permission" type="radio" value="@StepPermission.PermissionEnum.Write" id="option-three-@(i)" checked />
+                            }
+                            else
+                            {
+                                <input asp-for="@Model.Permissions[i].Permission" type="radio" value="@StepPermission.PermissionEnum.Write" id="option-three-@(i)" />
+                            }
+                            <label class="permission-label" for="option-three-@(i)">Schrijven</label>
+                        </div>
+                    </td>
+                </tr>
+            }
+        <tr>
+            <td>Is project manager</td>
+            <td>
+                <div class="radio-group">
+                    @if (Model.IsProjectLeader)
+                    {
+                        <input asp-for="@Model.IsProjectLeader" type="radio" id="option-one-99" value="true" checked>
+                        <label class="permission-label" for="option-one-99">Ja</label>
+                        <input asp-for="@Model.IsProjectLeader" type="radio" id="option-two-99" value="false">
+                        <label class="permission-label" for="option-two-99">Nee</label>
+                    }
+                    else
+                    {
+                        <input asp-for="@Model.IsProjectLeader" type="radio" id="option-one-99" value="true">
+                        <label class="permission-label" for="option-one-99">Ja</label>
+                        <input asp-for="@Model.IsProjectLeader" type="radio" id="option-two-99" value="false" checked>
+                        <label class="permission-label" for="option-two-99">Nee</label>
+                    }
+                </div>
+            </td>
+            
+        </tr>
+        </tbody>
+    </table>
+    <button value="submit" class="btn btn-success">Opslaan</button>
+</form>
+</div>

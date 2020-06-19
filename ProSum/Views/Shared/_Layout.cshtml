@@ -1,0 +1,66 @@
+﻿@inject ProSum.Containers.Interfaces.ISessionContainer sessionContainer
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ProSum</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    @RenderSection("Styles", required: false)
+    <script src="https://kit.fontawesome.com/d137459955.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" asp-controller="Project" asp-action="Index">
+                <img src="/images/Logo.png">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse bg-light" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Project" asp-action="Index">Overzicht</a>
+                    </li>
+                    @if (sessionContainer.GetSession(httpContextAccessor) != null)
+                    {
+                        @if (sessionContainer.HasAccess(httpContextAccessor, RolesEnum.Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index" asp-route-userId="@sessionContainer.GetSession(httpContextAccessor).User.Id">Admin panel</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Profile" asp-action="Index" asp-route-userId="@sessionContainer.GetSession(httpContextAccessor).User.Id">Profiel</a>
+                        </li>
+                    }
+                </ul>
+                <span class="navbar-text">
+                    <!-- Contains the right part of the nav bar (Welcome message and login/logout)-->
+                    <partial name="_LoginPartial" />
+                </span>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - ProSum - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,42 @@
+﻿@using ProSum.Models;
+@using ProSum.Models.ViewModels;
+@model CreateProjectViewModel;
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="body-content">
+    <form asp-action="Create" asp-controller="Project">
+        <div class="form-group">
+            <span asp-validation-for="@Model.Client" class="text-danger"></span> <br />
+            <label asp-for="@Model.Client" class="control-label">Klant: </label>
+            <select class="form-control" asp-for="@Model.Client">
+                @foreach (Client client in Model.Clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }
+            </select>
+        </div>
+
+        
+        <a role="button" class="btn btn-primary" style="color: white;" asp-controller="Client" asp-action="Create" asp-route-returnUrl="/Project/Create">Voeg client toe</a>
+        <div class="form-group">
+            <span asp-validation-for="@Model.Title" class="text-danger"></span> <br />
+            <label asp-for="@Model.Title" class="control-label">Naam: </label>
+            <input type="text" asp-for="@Model.Title" class="form-control" />
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.Description"  class="text-danger"></span> <br />
+            <label asp-for="@Model.Description" class="control-label">Omschrijving: </label>
+            <input type="text" asp-for="@Model.Description" class="form-control" />
+        </div>
+        <div class="form-group">
+            <span asp-validation-for="@Model.DeadLine" class="text-danger"></span> <br />
+            <label asp-for="@Model.DeadLine" class="control-label">Deadline: </label>
+            <input type="date" asp-for="@Model.DeadLine" class="form-control" value=@DateTime.Now />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Toevoegen" class="btn btn-primary" />
+        </div>
+    </form>
+</div>

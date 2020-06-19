@@ -1,0 +1,183 @@
+﻿@model ProSum.Models.ViewModels.CreateStepViewModel
+@{
+    ViewData["Title"] = "CreateStep";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/AdminProjectSteps.css">
+}
+
+<div class="body-content">
+
+    <div class="container">
+        <h1>Project Stappen Aanpassen</h1>
+        <div>
+            <ul class="list">
+                @foreach (Step step in Model.Steps)
+                {
+                    <li class="li-item" id="@step.Id" step_number="@step.StepNumber" name="@step.Name" draggable="true">
+                        <input type="text" style="display: none" />
+                        <span>@step.Name</span>
+                        <i class="fas fa-trash-alt delete-button text-center float-right" onclick="deleteItem(this);"></i>
+                        <i class="fa fa-pencil edit-button text-center float-right" onclick="editItem(this);" ></i>
+                        <i class="fas fa-check check-button text-center float-right" onclick="checkItem(this);" style="display: none;" ></i>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="forms">
+            <form id="step_form">
+                <input class="newStepName" name="stepName" id="step_name" placeholder="Stap naam" autocomplete="off" />
+                <button type="submit" class="btn btn-success submit_button">Stap toevoegen!</button>
+            </form>
+
+            <form id="save_steps" asp-action="CreateStep" asp-controller="Admin">
+                <button type="submit" class="btn btn-success submit_button">Stappen opslaan!</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Reorder list stuff
+        let list = document.querySelector('.list');
+        let draggedItem;
+
+        function isLiItem(event) {
+            return event.target && event.target.classList.contains('li-item');
+        }
+
+        function onDragStart(event) {
+            if (isLiItem(event)) {
+                event.target.classList.add('on-drag-start');
+                draggedItem = event.target;
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/html', event.target.innerHTML);
+            }
+        }
+
+        function onDragEnter(event) {
+            if (isLiItem(event)) {
+                event.target.classList.add('on-drag-enter');
+            }
+        }
+
+        function onDragLeave(event) {
+            if (isLiItem(event)) {
+                event.stopPropagation();
+                event.target.classList.remove('on-drag-enter');
+            }
+        }
+
+        function onDragOver(event) {
+            if (isLiItem(event)) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+            }
+        }
+
+        function onDragDrop(event) {
+            if (isLiItem(event)) {
+                // draggedItem.innerHTML = event.target.innerHTML;
+                // event.target.innerHTML = event.dataTransfer.getData('text/html');
+                list.insertBefore(draggedItem, event.target);
+                updateStepNumbers();
+                draggedItem.classList.remove('on-drag-start');
+                event.target.classList.remove('on-drag-start');
+            }
+        }
+
+        function onDragEnd(event) {
+            let allItems = list.querySelectorAll('.li-item');
+            allItems.forEach((item) => item.classList.remove('on-drag-enter'));
+            event.target.classList.remove('on-drag-start');
+        }
+
+        function updateStepNumbers() {
+            let steps = list.querySelectorAll('.li-item');
+            for (let i = 0; i < steps.length; i++) {
+                steps[i].setAttribute("step_number", i + 1);
+            }
+        }
+
+        list.addEventListener('dragstart', onDragStart);
+        list.addEventListener('dragover', onDragOver);
+        list.addEventListener('dragenter', onDragEnter);
+        list.addEventListener('dragleave', onDragLeave);
+        list.addEventListener('drop', onDragDrop);
+        list.addEventListener('dragend', onDragEnd);
+
+        // Add step stuff
+        let form = document.querySelector('#step_form');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault(); // cancel the actual submit
+            let new_step = document.querySelector('#step_name').value;
+
+            let new_li = document.createElement("li");
+            new_li.setAttribute("draggable", "true");
+            new_li.setAttribute("step_number", list.childElementCount + 1)
+            new_li.setAttribute("name", new_step);
+            new_li.classList.add("li-item");
+            new_li.innerHTML = '<span>' + new_step + '</span>' + '<i class="fas fa-trash-alt delete-button" onclick="deleteItem(this);" style="float: right;"></i><i class="fa fa-pencil edit-button" onclick="editItem(this);" style="float: right;"></i><i class="fas fa-check check-button" onclick="checkItem(this);" style="display: none; float: right"></i>';
+
+            list.appendChild(new_li);
+        });
+
+        let save_form = document.querySelector('#save_steps');
+
+        save_form.addEventListener('submit', e => {
+            e.preventDefault();
+            json = generateJson();
+            updateSteps(json);
+        });
+
+        function generateJson() {
+            let steps = list.querySelectorAll('.li-item');
+            let json = {};
+            json.steps = [];
+            for (let i = 0; i < steps.length; i++) {
+                let c_step = steps[i];
+                json.steps.push({
+                    "Id": c_step.getAttribute("id"),
+                    "Name": c_step.getAttribute("name"),
+                    "StepNumber": c_step.getAttribute("step_number")
+                })
+            }
+            return json;
+        }
+
+        function updateSteps(json) {
+            $.post('/Admin/CreateStep',
+                { steps: json.steps },
+                function (result) {
+                    alert("Steps saved!");
+                }
+            )
+        };
+
+        // Delete step stuff
+        function deleteItem(item) {
+            $(item).parent().remove();
+        };
+
+        function editItem(item) {
+            $(item).siblings("input[type='text']").val($(item).siblings("span").text());
+            $(item).siblings("input[type='text']").show();
+            $(item).siblings("i.check-button").show();
+            $(item).siblings("span").hide();
+            $(item).hide();
+        };
+
+        function checkItem(item) {
+            $(item).siblings("input[type='text']").hide();
+            $(item).hide();
+            $(item).siblings("span").text($(item).siblings("input[type='text']").val());
+            $(item).siblings("span").show();
+            $(item).parent("li").attr("name", $(item).siblings("input[type='text']").val());
+            $(item).siblings("i.edit-button").show();
+        };
+
+    </script>
+}

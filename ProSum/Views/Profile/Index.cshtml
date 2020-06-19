@@ -1,0 +1,194 @@
+﻿
+@model ProSum.Models.ViewModels.ProfileViewModel; 
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/ProfilePage.css"/>
+}
+
+<head>
+    <script src="https://use.fontawesome.com/98a41fb10c.js"></script>
+</head>
+
+<body>
+    <div class="body-content">
+        <div class="container bootstrap snippets">
+            <div class="row" id="user-profile">
+                <div class="col-lg-3 col-md-4 col-sm-4">
+                    <div class="main-box clearfix">
+                        <h2>@Model.Firstname @Model.Lastname  </h2>
+                        <div class="profile-status">
+                            <i class="fa fa-check-circle"></i> Online
+                        </div>
+                        <img src="/wwwroot/images/placeholder1.png" alt=""
+                             class="profile-img img-responsive center-block">
+                        <div class="profile-label">
+                            <span class="label label-danger">@Model.Role</span>
+                            <span class="label label-danger">@Model.Department</span>
+                        </div>
+
+                        <div class="profile-details">
+                            <ul class="fa-ul">
+                                <li><i class="fa-li fa fa-calendar"></i>Projecten: <span>@Model.ProjectCount</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 col-md-8 col-sm-8">
+                    <div class="main-box clearfix">
+                        <div class="profile-header">
+                            <h3><span>Persoonsgegevens</span></h3>
+                            @if(Model.Editable)
+                            { 
+                            
+                            <a asp-action="Edit" asp-route-userId="@Model.Id" class="btn btn-primary edit-profile">
+                                <i class="fa fa-pencil-square fa-lg" style="color: rgb(238, 227, 227);"></i> Profiel
+                                bewerken
+                            </a>
+                            
+                            }
+                        </div>
+
+                        <div class="row profile-user-info">
+                            <div class="col-sm-8">
+                                <div class="profile-user-details row">
+                                    <div class="col-4"><p><b>Voornaam: </b></p></div>
+                                    <div class="col-8"><p>@Model.Firstname</p></div>
+                                </div>
+                                <div class="profile-user-details row">
+                                    <div class="col-4"><p><b>Achternaam: </b></p></div>
+                                    <div class="col-8"><p>@Model.Lastname</p></div>
+                                </div>
+                                <div class="profile-user-details row">
+                                    <div class="col-4"><p><b>Email: </b></p></div>
+                                    <div class="col-8"><p>@Model.Email</p></div>
+                                </div>
+                                <div class="profile-user-details row">
+                                    <div class="col-4"><p><b>Telefoonnummer: </b></p></div>
+                                    <div class="col-8"><p>@Model.Phonenumber</p></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tabs-wrapper profile-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab-activity" data-toggle="tab">Activiteit</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane fade in" id="tab-activity">
+
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            @foreach (ProSum.Models.ViewModels.LogEntryViewModel entry in Model.logEntries)
+                                            {
+                                                string iconClass = "";
+                                                string badgeClass = "";
+                                                switch (entry.UpdateType)
+                                                {
+                                                    case LogEntryUpdateType.DELETED_CLIENT:
+                                                    case LogEntryUpdateType.DELETED_USER:
+                                                    case LogEntryUpdateType.DELETED_PROJECT:
+                                                        iconClass = "fa fa-trash";
+                                                        badgeClass = "badge badge-danger";
+                                                        break;
+
+                                                    case LogEntryUpdateType.UPDATED_CLIENT:
+                                                    case LogEntryUpdateType.UPDATED_USER:
+                                                    case LogEntryUpdateType.UPDATED_PROJECT:
+                                                        iconClass = "fa fa-pencil";
+                                                        badgeClass = "badge badge-warning";
+                                                        break;
+
+                                                    case LogEntryUpdateType.CREATED_CLIENT:
+                                                    case LogEntryUpdateType.CREATED_USER:
+                                                    case LogEntryUpdateType.CREATED_PROJECT:
+                                                        iconClass = "fa fa-plus-square";
+                                                        badgeClass = "badge badge-success";
+                                                        break;
+
+                                                    default:
+                                                        iconClass = "fa fa-pencil";
+                                                        badgeClass = "badge badge-primary";
+                                                        break;
+                                                }
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <i class="@iconClass"></i>
+                                                    </td>
+                                                    <td>
+                                                        <a asp-action="Details" asp-controller="Project" asp-route-projectId="@entry.Project.Id">
+                                                            <span class="@badgeClass">
+                                                                @entry.Project.Title
+                                                            </span>
+                                                        </a>
+
+                                                        @switch (entry.UpdateType)
+                                                        {
+                                                            case LogEntryUpdateType.CREATED_PROJECT:
+                                                                <span>@entry.Author.Name heeft het project @entry.Project.Title aangemaakt</span>;
+                                                                break;
+                                                            case LogEntryUpdateType.DELETED_PROJECT:
+                                                                <span>@entry.Author.Name heeft het project @entry.Project.Title verwijdert</span>;
+                                                                break;
+                                                            case LogEntryUpdateType.UPDATED_PROJECT:
+                                                                <span>@entry.Author.Name heeft het project @entry.Project.Title aangepast</span>;
+                                                                break;
+
+
+                                                            case LogEntryUpdateType.CREATED_CLIENT:
+                                                                <span>@entry.Author.Name heeft een client @entry.UpdatedUser aangemaakt</span>;
+                                                                break;
+                                                            case LogEntryUpdateType.DELETED_CLIENT:
+                                                                <span>@entry.Author.Name heeft een client @entry.UpdatedUser aangemaakt</span>;
+                                                                break;
+                                                            case LogEntryUpdateType.UPDATED_CLIENT:
+                                                                <span>@entry.Author.Name heeft een client @entry.UpdatedUser aangemaakt</span>;
+                                                                break;
+
+
+                                                            case LogEntryUpdateType.CREATED_USER:
+                                                                <span>@entry.Author.Name heeft een user @entry.UpdatedUser aangemaakt</span>;
+                                                                break;
+                                                            case LogEntryUpdateType.DELETED_USER:
+                                                                <span>@entry.Author.Name heeft een user @entry.UpdatedUser verwijdert</span>;
+                                                                break;
+                                                            case LogEntryUpdateType.UPDATED_USER:
+                                                                <span>@entry.Author.Name heeft een user @entry.UpdatedUser aangepast</span>;
+                                                                break;
+
+
+                                                            case LogEntryUpdateType.ADD_EMPLOYEE:
+                                                                <span>
+                                                                    @entry.Author.Name heeft medewerker <span class="badge badge-primary">@entry.UpdatedUser.Name</span> toegevoegd aan
+                                                                    <span class="badge badge-primary">@entry.Project.Title</span>
+                                                                </span>;
+                                                                break;
+
+                                                            case LogEntryUpdateType.STATUS_UPDATE:
+                                                                <span>
+                                                                    @entry.Author.Name heeft de status van @entry.Step.Name aangepast van
+                                                                    <span class="badge badge-primary">@entry.OldStatus.ToString().Replace("_", " ").ToUpper()</span>
+                                                                    naar
+                                                                    <span class="badge badge-primary">@entry.NewStatus.ToString().Replace("_", " ").ToUpper()</span>
+                                                                </span>
+                                                                break;
+
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @entry.TimeStamp.ToString("dd-MM-yyyy HH:mm")
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+</body>

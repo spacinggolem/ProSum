@@ -1,0 +1,294 @@
+﻿@using ProSum.Models.ViewModels
+@model ProjectViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/ProjectDetailPage.css" />
+}
+
+<head>
+    <script src="https://use.fontawesome.com/98a41fb10c.js"></script>
+</head>
+
+<div class="body-content">
+    <h1>Project</h1>
+
+    <header>
+        <nav class="navbar">
+            <a class="navbar-text" style="color:gray; text-decoration:underline;" href="#">Details</a>
+            <a class="navbar-text" asp-action="Announcements" asp-controller="Project" asp-route-projectId="@Model.Id">Announcements (@Model.Announcements.Count)</a>
+        </nav>
+    </header>
+
+    <div class="project-wrapper">
+        <div class="project-column-wrapper">
+            <div class="project-detail-table" id="employees">
+                <div class="title">
+                    <h3>Betrokkenen</h3>
+                </div>
+                <div class="content">
+                    <table class="table-bordered table-responsive">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Afdeling
+                                </th>
+                                <th>
+                                    Naam
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DepartmentEnum department in Enum.GetValues(typeof(DepartmentEnum)))
+                            {
+                                if (department.ToString() == "None")
+                                {
+                                    <tr>
+                                        <td>
+                                            Project leider
+                                        </td>
+                                        <td>
+                                            @foreach (User user in Model.ProjectManagers)
+                                            {
+                                                @user.Name <br />
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+
+
+                                    <tr>
+                                        <td>
+                                            @department.ToString()
+                                        </td>
+                                        <td>
+                                            @foreach (User user in Model.ProjectEmployees.FindAll(x => x.Department == department))
+                                            {
+                                                @user.Name <br />
+                                            }
+
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="project-buttons mt-3">
+                <form asp-controller="Project" asp-action="AddEmployee" method="get" style="display:inline;">
+                    <input type="hidden" value="@Model.Id" name="projectId" />
+                    <button type="submit" class="btn btn-success">Medewerkers</button>
+                </form>
+            </div>
+        </div>
+        <div class="project-column-wrapper">
+
+            <div class="project-detail-table" id="project-details">
+                <div class="title">
+                    <h3>Project details:</h3>
+                </div>
+                <div class="content">
+                    <table class="table-responsive">
+                        <tr>
+                            <th scope="row">
+                                Titel:
+                            </th>
+                            <td>
+                                @Model.Title
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Deadline:
+                            </th>
+                            <td>
+                                @Model.DeadLine.ToString("dd MMMM yyyy")
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Omschrijving:
+                            </th>
+                            <td>
+                                @Model.Description
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="project-detail-table" id="client">
+                <div class="title">
+                    <h3>Klant gegevens</h3>
+                </div>
+                <div class="content">
+                    <table class="table-responsive">
+                        <tr>
+                            <th scope="row">
+                                Naam:
+                            </th>
+                            <td>
+                                @Model.Client?.Company
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Contactpersoon:
+                            </th>
+                            <td>
+                                @Model.Client?.Name
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Telefoonnummer:
+                            </th>
+                            <td>
+                                @Model.Client?.PhoneNumber
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Email:
+                            </th>
+                            <td>
+                                @Model.Client?.Email
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="project-buttons ml-auto mt-3">
+                <form asp-controller="Project" asp-action="Edit" method="get" style="display:inline;">
+                    <input type="hidden" value="@Model.Id" name="projectId" />
+                    <button type="submit" class="btn btn-warning">Bewerk</button>
+                </form>
+                <form asp-controller="Project" asp-action="Delete" style="display:inline;">
+                    <input type="hidden" value="@Model.Id" name="projectId" />
+                    <button type="submit" class="btn btn-danger">Verwijder</button>
+                </form>
+            </div>
+        </div>
+        <div class="project-column-wrapper">
+            <div class="project-detail-table" id="progress">
+                <div class="title">
+                    <h3>Project voortgang</h3>
+                </div>
+                <div class="content">
+                    <table class="table-bordered table-responsive">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Stap
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Edit
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (ProjectStep step in Model.Steps.OrderBy(x => x.Step.StepNumber))
+                            {
+                                <tr style="height: 50px;">
+                                    <td style="width:45%;">
+                                        @step.Step.Name
+                                    </td>
+                                    <td class="statusCell" style="width:45%;">
+                                        <label class="status-label @step.Status.ToString()" id="@step.Step.Id.ToString()"></label>
+                                        @if (Model.UserPermissions.Any(p => p.Name == "Write" + step.Step.Name))
+                                        {
+                                            <select id="@step.Step.Id.ToString()" style="display: none;">
+                                                @foreach (Step.Status status in Enum.GetValues(typeof(Step.Status)))
+                                                {
+                                                    string Translate = "";
+                                                    switch (status)
+                                                    {
+                                                        case Step.Status.not_started:
+                                                            Translate = "Niet begonnen";
+                                                            break;
+                                                        case Step.Status.in_progress:
+                                                            Translate = "Bezig";
+                                                            break;
+                                                        case Step.Status.awaiting_confirmation:
+                                                            Translate = "Wachten op bevestiging";
+                                                            break;
+                                                        case Step.Status.confirmed:
+                                                            Translate = "Afgerond";
+                                                            break;
+
+                                                    }
+
+                                                    if (status == step.Status)
+                                                    {
+                                                        <option selected value="@status">
+                                                            @Translate
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@status">
+                                                            @Translate
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        <td id="edit-button" style="width:10%;">
+                                            <i align="center" class="fa fa-edit fa-2x pencil" onclick="ToggleEdit(this)"></i>
+                                            <i align="center" class="fa fa-check fa-2x checkmark" onclick="ToggleEdit(this)" style="display: none;"></i>
+                                        </td>
+                                    }
+                                    </tr>
+                                }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+                                            {
+    <script type="text/javascript">
+    function StatusChange(step) {
+        $.post('/Project/UpdateStatus',
+             { projectId: '@(Model.Id.ToString())', stepId: $(step).attr('id'), status: $(step).val() }, function (result) {}
+        )
+        }
+
+        function ToggleEdit(event) {
+            if ($(event).hasClass("pencil")) {
+                let statusCell = $(event).parent().siblings(".statusCell");
+                statusCell.children("label").hide();
+                statusCell.children("select").show();
+
+                $(event).siblings(".checkmark").show();
+                $(event).hide();
+
+            } else if ($(event).hasClass("checkmark")) {
+                let statusCell = $(event).parent().siblings(".statusCell");
+
+                statusCell.children("label").show();
+                statusCell.children("select").css("display", "none");
+
+                if (statusCell.children("label").text() != statusCell.children("select").val()) {
+                    StatusChange(statusCell.children("select"));
+
+                    statusCell.children("label").removeClass();
+                    statusCell.children("label").addClass("status-label");
+                    statusCell.children("label").addClass(statusCell.children("select").val())
+
+                    // statusCell.children("label").text(statusCell.children("select").val().replace("_", " "));
+                }
+
+                $(event).siblings(".pencil").show();
+                $(event).hide();
+            }
+        }
+
+    </script>
+}

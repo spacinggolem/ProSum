@@ -1,0 +1,114 @@
+﻿@using ProSum.Models.ViewModels
+@model List<LogEntryViewModel>
+@{
+    ViewData["Title"] = "Logs";
+}
+
+<h1>Logs</h1>
+
+<div class="body-content">
+    <table class="table table-bordered">
+        <tbody>
+            @foreach (LogEntryViewModel entry in Model)
+            {
+                string iconClass = "";
+                string badgeClass = "";
+                switch (entry.UpdateType)
+                {
+                    case LogEntryUpdateType.DELETED_CLIENT:
+                    case LogEntryUpdateType.DELETED_USER:
+                    case LogEntryUpdateType.DELETED_PROJECT:
+                        iconClass = "fa fa-trash";
+                        badgeClass = "badge badge-danger";
+                        break;
+
+                    case LogEntryUpdateType.UPDATED_CLIENT:
+                    case LogEntryUpdateType.UPDATED_USER:
+                    case LogEntryUpdateType.UPDATED_PROJECT:
+                        iconClass = "fa fa-pencil";
+                        badgeClass = "badge badge-warning";
+                        break;
+
+                    case LogEntryUpdateType.CREATED_CLIENT:
+                    case LogEntryUpdateType.CREATED_USER:
+                    case LogEntryUpdateType.CREATED_PROJECT:
+                        iconClass = "fa fa-plus-square";
+                        badgeClass = "badge badge-success";
+                        break;
+
+                    default:
+                        iconClass = "fa fa-pencil";
+                        badgeClass = "badge badge-primary";
+                        break;
+                }
+                <tr>
+                    <td class="text-center">
+                        <i class="@iconClass"></i>
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-controller="Project" asp-route-projectId="@entry.Project.Id">
+                            <span class="@badgeClass">
+                                @entry.Project.Title
+                            </span>
+                        </a>
+
+                        @switch (entry.UpdateType)
+                        {
+                            case LogEntryUpdateType.CREATED_PROJECT:
+                                <span>@entry.Author.Name heeft het project @entry.Project.Title aangemaakt</span>;
+                                break;
+                            case LogEntryUpdateType.DELETED_PROJECT:
+                    <span>@entry.Author.Name heeft het project @entry.Project.Title verwijdert</span>;
+                                break;
+                            case LogEntryUpdateType.UPDATED_PROJECT:
+                    <span>@entry.Author.Name heeft het project @entry.Project.Title aangepast</span>;
+                                break;
+
+
+                            case LogEntryUpdateType.CREATED_CLIENT:
+                                <span>@entry.Author.Name heeft een client @entry.UpdatedUser aangemaakt</span>;
+                                break;
+                            case LogEntryUpdateType.DELETED_CLIENT:
+                    <span>@entry.Author.Name heeft een client @entry.UpdatedUser aangemaakt</span>;
+                                break;
+                            case LogEntryUpdateType.UPDATED_CLIENT:
+                    <span>@entry.Author.Name heeft een client @entry.UpdatedUser aangemaakt</span>;
+                                break;
+
+
+                            case LogEntryUpdateType.CREATED_USER:
+                    <span>@entry.Author.Name heeft een user @entry.UpdatedUser aangemaakt</span>;
+                                break;
+                            case LogEntryUpdateType.DELETED_USER:
+                    <span>@entry.Author.Name heeft een user @entry.UpdatedUser verwijdert</span>;
+                                break;
+                            case LogEntryUpdateType.UPDATED_USER:
+                    <span>@entry.Author.Name heeft een user @entry.UpdatedUser aangepast</span>;
+                                break;
+
+
+                            case LogEntryUpdateType.ADD_EMPLOYEE:
+                                <span>@entry.Author.Name heeft medewerker <span class="badge badge-primary">@entry.UpdatedUser.Name</span> toegevoegd aan
+                                                                          <span class="badge badge-primary">@entry.Project.Title</span>
+                                </span>;
+                                break;
+
+                            case LogEntryUpdateType.STATUS_UPDATE:
+                                <span>
+                                    @entry.Author.Name heeft de status van @entry.Step.Name aangepast van
+                                    <span class="badge badge-primary">@entry.OldStatus.ToString().Replace("_", " ").ToUpper()</span>
+                                    naar
+                                    <span class="badge badge-primary">@entry.NewStatus.ToString().Replace("_", " ").ToUpper()</span>
+                                </span>
+                                break;
+
+                        }
+                    </td>
+                    <td>
+                        @entry.TimeStamp.ToString("dd-MM-yyyy HH:mm")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

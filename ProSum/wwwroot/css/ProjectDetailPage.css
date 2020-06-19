@@ -1,0 +1,109 @@
+﻿/* Project Detail Page*/
+
+div.project-wrapper {
+    background-color: white;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 20px;
+    padding: 1%;
+    box-shadow: 5px 5px rgba(0, 0, 0, .2);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+    div.project-wrapper .project-column-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 1%;
+        align-content: space-between;
+    }
+
+div.project-detail-table {
+    border: 1px solid #707070;
+    border-radius: 15px;
+    margin: 1%;
+    min-width: 400px;
+    box-shadow: 5px 5px rgba(0, 0, 0, .2);
+    overflow: hidden;
+}
+
+    div.project-detail-table div.title {
+        text-align: center;
+        margin: auto;
+        padding: 1%;
+        border-bottom: 1px solid #707070;
+        background-color: #0F4C72;
+    }
+
+        div.project-detail-table div.title h3 {
+            color: white;
+        }
+
+
+        div.project-detail-table div.content {
+            overflow-wrap: normal;
+            padding: 1%;
+        }
+
+    div.project-detail-table table {
+        text-align: left;
+    }
+
+        div.project-detail-table table td {
+            padding-left: 10px;
+        }
+
+#employees table {
+    width: 100%;
+}
+
+    #employees table th,
+    #employees table td {
+        padding: 10px;
+    }
+
+#progress table {
+    width: 100%;
+}
+
+    #progress table th,
+    #progress table td {
+        padding: 10px;
+    }
+
+    #progress table tbody td {
+        font-weight: bold;
+    }
+
+.confirmed:after {
+    color: #259E01;
+    content: 'Afgerond';
+}
+
+.awaiting_confirmation:after {
+    color: #047CE5;
+    content: 'Wachten op bevestiging';
+}
+
+.in_progress:after {
+    color: #F99806;
+    content: 'Bezig';
+}
+
+.not_started:after {
+    color: #D60108;
+    content: 'Niet begonnen'
+}
+
+i {
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    text-align: center;
+}
+
+
+/* End Detail Page*/

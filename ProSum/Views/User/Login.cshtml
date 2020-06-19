@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Aanmelden";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/loginForm.css" />
+}
+
+@model ProSum.Models.ViewModels.LoginViewModel
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+        <!-- Icon -->
+        <div class="fadeIn first">
+        </div>
+        <div class="container" style="padding-top:15px">
+            <span asp-validation-for="@Model.Email" class="text-danger"></span> <br />
+            <span asp-validation-for="@Model.Password" class="text-danger"></span> <br />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        </div>
+        <!-- Login Form -->
+        <div class="container">
+
+
+
+            <form asp-action="Login" asp-controller="User" class="mt-5">
+                <input type="email" asp-for="@Model.Email" id="login" class="fadeIn second" placeholder="email">
+                <input type="password" asp-for="@Model.Password" class="fadeIn third" placeholder="password">
+                <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                <input type="submit" class="fadeIn fourth mb-5" value="Log In">
+            </form>
+        </div>
+    </div>
+</div>
